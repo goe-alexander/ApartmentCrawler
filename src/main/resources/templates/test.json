@@ -1,0 +1,387 @@
+[
+  {
+    "id": "308807565705772",
+    "start_time": "1589282658000",
+    "end_time": "1589282975000",
+    "driving_time": "73020",
+    "type": "NORMAL_TRIP",
+    "status": 1,
+    "total_distance": 1530.0,
+    "header_rides_ids": [
+      "308807565705773"
+    ],
+    "ride_headers": [
+      {
+        "id": "308807565705773",
+        "start_time": "1589282658000",
+        "end_time": "1589282975000",
+        "driving_time": "73020",
+        "type": "BIKE_RIDE",
+        "status": 1,
+        "total_distance": 1530.0,
+        "title": "Brașov",
+        "header_rides_ids": [
+          "308807565705773"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "308807423025224",
+    "start_time": "1588229015000",
+    "end_time": "1588248718000",
+    "driving_time": "821003",
+    "type": "NORMAL_TRIP",
+    "status": 1,
+    "total_distance": 17560.0,
+    "header_rides_ids": [
+      "308807423025223",
+      "308807423025225",
+      "308807423025226",
+      "308807436511574"
+    ],
+    "ride_headers": [
+      {
+        "id": "308807436511574",
+        "start_time": "1588248368000",
+        "end_time": "1588248718000",
+        "driving_time": "168858",
+        "type": "BIKE_RIDE",
+        "status": 1,
+        "total_distance": 3336.0,
+        "title": "Brașov",
+        "header_rides_ids": [
+          "308807436511574"
+        ]
+      },
+      {
+        "id": "308807423025226",
+        "start_time": "1588243336000",
+        "end_time": "1588243537000",
+        "driving_time": "171412",
+        "type": "BIKE_RIDE",
+        "status": 1,
+        "total_distance": 3717.0,
+        "title": "Brașov",
+        "header_rides_ids": [
+          "308807423025226"
+        ]
+      },
+      {
+        "id": "308807423025225",
+        "start_time": "1588242382000",
+        "end_time": "1588242681000",
+        "driving_time": "222872",
+        "type": "BIKE_RIDE",
+        "status": 1,
+        "total_distance": 4842.0,
+        "title": "Brașov",
+        "header_rides_ids": [
+          "308807423025225"
+        ]
+      },
+      {
+        "id": "308807423025223",
+        "start_time": "1588229015000",
+        "end_time": "1588229448000",
+        "driving_time": "257861",
+        "type": "BIKE_RIDE",
+        "status": 1,
+        "total_distance": 5665.0,
+        "title": "Brașov",
+        "header_rides_ids": [
+          "308807423025223"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "308807450635788",
+    "start_time": "1588227590000",
+    "end_time": "1588227590000",
+    "driving_time": "197000",
+    "type": "NORMAL_TRIP",
+    "status": 1,
+    "total_distance": 3703.0,
+    "header_rides_ids": [
+      "308807450635787"
+    ],
+    "ride_headers": [
+      {
+        "id": "308807450635787",
+        "start_time": "1588227590000",
+        "end_time": "1588227590000",
+        "driving_time": "197000",
+        "type": "BIKE_RIDE",
+        "status": 1,
+        "total_distance": 3703.0,
+        "title": "Brașov",
+        "header_rides_ids": [
+          "308807450635787"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "308807364293563",
+    "start_time": "1588165697000",
+    "end_time": "1588167491000",
+    "driving_time": "486000",
+    "type": "NORMAL_TRIP",
+    "status": 1,
+    "total_distance": 10388.0,
+    "header_rides_ids": [
+      "308807364293562",
+      "308807364293564"
+    ],
+    "ride_headers": [
+      {
+        "id": "308807364293564",
+        "start_time": "1588167359000",
+        "end_time": "1588167491000",
+        "driving_time": "132000",
+        "type": "BIKE_RIDE",
+        "status": 1,
+        "total_distance": 2598.0,
+        "title": "Brașov",
+        "header_rides_ids": [
+          "308807364293564"
+        ]
+      },
+      {
+        "id": "308807364293562",
+        "start_time": "1588165697000",
+        "end_time": "1588166051000",
+        "driving_time": "354000",
+        "type": "BIKE_RIDE",
+        "status": 1,
+        "total_distance": 7790.0,
+        "title": "Brașov",
+        "header_rides_ids": [
+          "308807364293562"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "308807364293547",
+    "start_time": "1588162919000",
+    "end_time": "1588228676000",
+    "driving_time": "424290",
+    "type": "NORMAL_TRIP",
+    "status": 1,
+    "total_distance": 8931.0,
+    "header_rides_ids": [
+      "308807364293546",
+      "308807423025222"
+    ],
+    "ride_headers": [
+      {
+        "id": "308807423025222",
+        "start_time": "1588228292000",
+        "end_time": "1588228676000",
+        "driving_time": "216409",
+        "type": "BIKE_RIDE",
+        "status": 1,
+        "total_distance": 4354.0,
+        "title": "Brașov",
+        "header_rides_ids": [
+          "308807423025222"
+        ]
+      },
+      {
+        "id": "308807364293546",
+        "start_time": "1588162919000",
+        "end_time": "1588163144000",
+        "driving_time": "207881",
+        "type": "BIKE_RIDE",
+        "status": 1,
+        "total_distance": 4577.0,
+        "title": "Brașov",
+        "header_rides_ids": [
+          "308807364293546"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "308807364293543",
+    "start_time": "1588160955000",
+    "end_time": "1588162061000",
+    "driving_time": "356328",
+    "type": "NORMAL_TRIP",
+    "status": 1,
+    "total_distance": 7785.0,
+    "title": "BBBB",
+    "header_rides_ids": [
+      "308807364293544",
+      "308807364293545"
+    ],
+    "ride_headers": [
+      {
+        "id": "308807364293545",
+        "start_time": "1588161839000",
+        "end_time": "1588162061000",
+        "driving_time": "198404",
+        "type": "BIKE_RIDE",
+        "status": 1,
+        "total_distance": 4340.0,
+        "title": "Brașov",
+        "header_rides_ids": [
+          "308807364293545"
+        ]
+      },
+      {
+        "id": "308807364293544",
+        "start_time": "1588160955000",
+        "end_time": "1588161541000",
+        "driving_time": "157924",
+        "type": "BIKE_RIDE",
+        "status": 1,
+        "total_distance": 3445.0,
+        "title": "BVVVV",
+        "header_rides_ids": [
+          "308807364293544"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "308807223147426",
+    "start_time": "1586872121000",
+    "end_time": "1586872218000",
+    "driving_time": "81480",
+    "type": "NORMAL_TRIP",
+    "status": 1,
+    "total_distance": 1672.0,
+    "header_rides_ids": [
+      "308807223147425"
+    ],
+    "ride_headers": [
+      {
+        "id": "308807223147425",
+        "start_time": "1586872121000",
+        "end_time": "1586872218000",
+        "driving_time": "81480",
+        "type": "BIKE_RIDE",
+        "status": 1,
+        "total_distance": 1672.0,
+        "title": "Brașov999",
+        "header_rides_ids": [
+          "308807223147425"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "308807026574175",
+    "start_time": "1585320919000",
+    "end_time": "1585320954000",
+    "driving_time": "22007",
+    "type": "NORMAL_TRIP",
+    "status": 1,
+    "total_distance": 318.0,
+    "header_rides_ids": [
+      "308807026574174"
+    ],
+    "ride_headers": [
+      {
+        "id": "308807026574174",
+        "start_time": "1585320919000",
+        "end_time": "1585320954000",
+        "driving_time": "22007",
+        "type": "BIKE_RIDE",
+        "status": 1,
+        "total_distance": 318.0,
+        "title": "Brașov",
+        "header_rides_ids": [
+          "308807026574174"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "308807025247723",
+    "start_time": "1585232078000",
+    "end_time": "1585320622000",
+    "driving_time": "918055",
+    "type": "NORMAL_TRIP",
+    "status": 1,
+    "total_distance": 19970.0,
+    "title": "Brasov 26.03 - 27.03.2020",
+    "header_rides_ids": [
+      "308807025247722",
+      "308807025247724",
+      "308807026574171",
+      "308807026574172",
+      "308807026574173"
+    ],
+    "ride_headers": [
+      {
+        "id": "308807026574173",
+        "start_time": "1585320539000",
+        "end_time": "1585320622000",
+        "driving_time": "64077",
+        "type": "BIKE_RIDE",
+        "status": 1,
+        "total_distance": 1319.0,
+        "title": "Brașov",
+        "header_rides_ids": [
+          "308807026574173"
+        ]
+      },
+      {
+        "id": "308807026574172",
+        "start_time": "1585319841000",
+        "end_time": "1585320122000",
+        "driving_time": "108385",
+        "type": "BIKE_RIDE",
+        "status": 1,
+        "total_distance": 2261.0,
+        "title": "Brașov",
+        "header_rides_ids": [
+          "308807026574172"
+        ]
+      },
+      {
+        "id": "308807026574171",
+        "start_time": "1585302585000",
+        "end_time": "1585302842000",
+        "driving_time": "154418",
+        "type": "BIKE_RIDE",
+        "status": 1,
+        "total_distance": 3346.0,
+        "title": "Brașov-Kln",
+        "header_rides_ids": [
+          "308807026574171"
+        ]
+      },
+      {
+        "id": "308807025247724",
+        "start_time": "1585232461000",
+        "end_time": "1585232794000",
+        "driving_time": "320807",
+        "type": "BIKE_RIDE",
+        "status": 1,
+        "total_distance": 7077.0,
+        "title": "default_activity_title",
+        "header_rides_ids": [
+          "308807025247724"
+        ]
+      },
+      {
+        "id": "308807025247722",
+        "start_time": "1585232078000",
+        "end_time": "1585232366000",
+        "driving_time": "270368",
+        "type": "BIKE_RIDE",
+        "status": 1,
+        "total_distance": 5967.0,
+        "title": "default_activity_title",
+        "header_rides_ids": [
+          "308807025247722"
+        ]
+      }
+    ]
+  }
+]

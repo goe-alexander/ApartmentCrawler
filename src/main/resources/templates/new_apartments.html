@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <style>
+table{
+  border: 1px solid black;
+}
+thead{
+  background-color: #82b440;
+  color: white;
+}
+th, td {
+  padding: 15px;
+  text-align: left;
+
+}
+td {
+  border-bottom: 1px solid #ddd;
+border-right: 1px solid #ddd;
+}
+tr:hover {background-color: #f5f5f5;}
+</style>
+</head>
+<body><table style="border: 1px solid black;"><thead>
+<tr>
+    <td>Pret</td>
+    <td>Locatie</td>
+    <td>Suprafata Construita</td>
+    <td>Nr Bai</td>
+    <td>An Constructie</td>
+    <td>Link direct</td>
+    <td>Contact Name</td>
+</tr>
+</thead>
+    <tbody>
+    <tr th:if="${apartments.empty}">
+        <td colspan="6"> No Apartments available there must have been an issue. Check logs! </td>
+    </tr>
+    <tr th:each="ap : ${apartments}">
+        <td><span th:text="${ap.price}"> Pret </span></td>
+        <td><span th:text="${ap.address}"> Locatie </span></td>
+        <td><span th:text="${ap.builtSurface}"> Suprafata Construita </span></td>
+        <td><span th:text="${ap.bathrooms}"> nr bai </span></td>
+        <td><span th:text="${ap.yearBuilt}"> an Constructie </span></td>
+        <td><span th:text="${ap.directLink}"> link direct </span></td>
+        <td><span th:text="${ap.contact.name}"> Contact Name </span></td>
+    </tr>
+    </tbody>
+</table></body></html>
