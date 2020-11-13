@@ -89,6 +89,9 @@ public class Apartment {
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "apartment", orphanRemoval = true)
     private List<PriceHistory> priceHistories;
 
+    @Column
+    private Boolean active;
+
     @Override
     public String toString() {
         return title +

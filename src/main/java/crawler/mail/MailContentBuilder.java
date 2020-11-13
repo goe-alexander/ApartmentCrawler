@@ -28,4 +28,9 @@ public class MailContentBuilder {
         thymeleafContext.setVariable("apartments", changePriceApartments);
         return templateEngine.process("changed_apartments", thymeleafContext);
     }
+    public String buildInactiveApartmentsTables(List<Apartment> inactiveApartments) {
+        Context thymeleafContext = new Context();
+        thymeleafContext.setVariable("apartments", inactiveApartments);
+        return templateEngine.process("inactive_apartments", thymeleafContext);
+    }
 }

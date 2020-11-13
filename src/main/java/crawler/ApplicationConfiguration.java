@@ -21,6 +21,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import javax.mail.MessagingException;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -43,10 +44,20 @@ public class ApplicationConfiguration {
   @Autowired EmailService emailService;
   @Autowired PriceHistoryUtils priceHistoryUtils;
 
-  List<Apartment> changedPriceApartments = new ArrayList<Apartment>();
+  List<Apartment> changedPriceApartments = new ArrayList<>();
+  List<Apartment> foundNewApartments = new ArrayList<>();
+  List<Apartment> inactiveApartments = new ArrayList<>();
+  List<String> URLS =
+      Arrays.asList(
+          "https://www.imobiliare.ro/vanzare-apartamente/brasov/racadau?id=26607433", // Racadau 3
+          // camere
+          "https://www.imobiliare.ro/vanzare-apartamente/brasov/racadau?id=37385225", // Racadau 4
+          // camere
+          "https://www.imobiliare.ro/vanzare-apartamente/brasov/astra?id=52649222" // Astra 4 camere
+          );
 
   private final List<String> recipients =
-      Stream.of("").collect(Collectors.toList());
+      Stream.of("your.eamil.list@here.com").collect(Collectors.toList());
 
   private List<Apartment> getAppartments(String finalURL) throws IOException, ParseException {
     Connection webConnection = Jsoup.connect(finalURL).userAgent(USER_AGENT);
@@ -71,6 +82,23 @@ public class ApplicationConfiguration {
     return apartments;
   }
 
+  private void checkIfApartmentsStillExist(List<Apartment> apartments)
+      throws IOException, ParseException {
+    for (Apartment apartment : apartments) {
+      Connection webConnection = Jsoup.connect(apartment.getDirectLink());
+      Document htmlDoc = webConnection.get();
+      Elements ofertaExpirata = htmlDoc.select("#oferta_expirata");
+      if (ofertaExpirata.size() == 0) {
+        continue;
+      } else {
+        System.out.println("Found inactive apartment: " + apartment.getId());
+        apartment.setActive(false);
+        apartmentRepository.save(apartment);
+        inactiveApartments.add(apartment);
+      }
+    }
+  }
+
   private Optional<Apartment> mapHTMLtoEntity(Element apartmentDIVHeader)
       throws IOException, ParseException {
     String externalId = apartmentDIVHeader.attr("data-id-cod");
@@ -84,7 +112,9 @@ public class ApplicationConfiguration {
       Double currentPrice = apartmentMapper.getPriceFromHeader(apartmentDIVHeader);
       if (!currentPrice.equals(existingApartment.getPrice())) {
         existingApartment.setLastUpdated(new Date());
-        existingApartment.getPriceHistories().add(generateAndSavePriceHistory(existingApartment, currentPrice));
+        existingApartment
+            .getPriceHistories()
+            .add(generateAndSavePriceHistory(existingApartment, currentPrice));
         existingApartment.setPrice(currentPrice);
         // save the changes
         apartmentRepository.save(existingApartment);
@@ -100,15 +130,15 @@ public class ApplicationConfiguration {
     return Optional.ofNullable(apartment);
   }
 
-  private PriceHistory generateAndSavePriceHistory(Apartment apartment, Double newPrice){
-      PriceHistory priceHistory;
-    if(newPrice == null){
+  private PriceHistory generateAndSavePriceHistory(Apartment apartment, Double newPrice) {
+    PriceHistory priceHistory;
+    if (newPrice == null) {
       priceHistory = priceHistoryUtils.generatePriceHistoryForNewApartment(apartment);
-    }else {
+    } else {
       priceHistory = priceHistoryUtils.generatePriceHistoryForExistingApp(apartment, newPrice);
     }
-    //priceHistoryRepository.save(priceHistory);
-    return  priceHistory;
+    // priceHistoryRepository.save(priceHistory);
+    return priceHistory;
   }
 
   private void checkIfContactAlreadyExists(Apartment apartment) {
@@ -135,26 +165,47 @@ public class ApplicationConfiguration {
       List<Apartment> apartmentsForTest = new ArrayList<>();
       System.out.println("Creepy Crawlies!\n ~ \n ~ \n ~ \n ~ \n ~ \n ~");
 
-      System.out.println("Testing Matcher: ");
+      System.out.println("Verifying invalid links:");
+      checkIfApartmentsStillExist(apartmentRepository.findAllByActiveTrue());
+      emailService.sendComplexMessageWithInactiveAccounts(
+          recipients,
+          "The following apartments are inactive!",
+          "These were taken off the market",
+          inactiveApartments);
+
+      System.out.println("Searching for new apartments: ");
       System.out.println("");
-      List<Apartment> foundNewApartments =
-          getAppartments(
-              "https://www.imobiliare.ro/vanzare-apartamente/brasov/racadau?id=26607433");
-      foundNewApartments =
-          foundNewApartments.stream()
-              .sorted(Comparator.comparing(Apartment::getPrice))
-              .collect(Collectors.toList());
-      if (!foundNewApartments.isEmpty()) {
-        emailService.sendComplexMessageWithNewApartments(
-            recipients, "Crawling for a home, Found New Appartments ", "", foundNewApartments);
+      for (String url : URLS) {
+        foundNewApartments.addAll(getAppartments(url));
       }
-      if (!changedPriceApartments.isEmpty()) {
-        emailService.sendComplexMessageWithModifiedPrices(
-            recipients,
-            "Crawling for a home, Apartments that changed price",
-            "",
-            changedPriceApartments);
-      }
+      sortCollectionsByRoomsAndPrice();
+      sendEmails();
     };
+  }
+
+  private void sortCollectionsByRoomsAndPrice() {
+    Comparator standardComparator =
+        Comparator.comparing(Apartment::getRooms).thenComparing(Apartment::getPrice);
+
+    foundNewApartments =
+        (List<Apartment>)
+            foundNewApartments.stream().sorted(standardComparator).collect(Collectors.toList());
+    changedPriceApartments =
+        (List<Apartment>)
+            changedPriceApartments.stream().sorted(standardComparator).collect(Collectors.toList());
+  }
+
+  private void sendEmails() throws MessagingException {
+    if (!foundNewApartments.isEmpty()) {
+      emailService.sendComplexMessageWithNewApartments(
+              recipients, "Crawling for a home, Found New Appartments ", "", foundNewApartments);
+    }
+    if (!changedPriceApartments.isEmpty()) {
+      emailService.sendComplexMessageWithModifiedPrices(
+              recipients,
+              "Crawling for a home, Apartments that changed price",
+              "",
+              changedPriceApartments);
+    }
   }
 }

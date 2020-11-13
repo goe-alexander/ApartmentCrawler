@@ -26,6 +26,7 @@ tr:hover {background-color: #f5f5f5;}
 <tr>
     <td>Pret</td>
     <td>Locatie</td>
+    <td>Nr. Camere</td>
     <td>Price History</td>
     <td>Link direct</td>
     <td>Contact Name</td>
@@ -38,6 +39,7 @@ tr:hover {background-color: #f5f5f5;}
     <tr th:each="ap : ${apartments}">
         <td><span th:text="${ap.price}"> Pret </span></td>
         <td><span th:text="${ap.address}"> Locatie </span></td>
+        <td><span th:text="${ap.rooms}"> Nr. Camere </span></td>
         <td>
             <table style="border: 1px solid black;">
                 <thead>
