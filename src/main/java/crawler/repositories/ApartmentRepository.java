@@ -10,4 +10,5 @@ import java.util.List;
 public interface ApartmentRepository extends CrudRepository<Apartment, Long> {
     Apartment findByExternalIdAndSource(String externalId, String source);
     List<Apartment> findAllByActiveTrue();
+    List<Apartment> findAllByActiveFalse();
 }

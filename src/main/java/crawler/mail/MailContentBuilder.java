@@ -17,20 +17,9 @@ public class MailContentBuilder {
         this.templateEngine = templateEngine;
     }
 
-    public String buildMainNewApartmentsTable(List<Apartment> apartments) {
+    public String buildHtmlTable(List<Apartment> source, String template_name){
         Context thymeleafContext = new Context();
-        thymeleafContext.setVariable("apartments", apartments);
-        return templateEngine.process("new_apartments", thymeleafContext);
-    }
-
-    public String buildChangedPriceApartmentsTable(List<Apartment> changePriceApartments) {
-        Context thymeleafContext = new Context();
-        thymeleafContext.setVariable("apartments", changePriceApartments);
-        return templateEngine.process("changed_apartments", thymeleafContext);
-    }
-    public String buildInactiveApartmentsTables(List<Apartment> inactiveApartments) {
-        Context thymeleafContext = new Context();
-        thymeleafContext.setVariable("apartments", inactiveApartments);
-        return templateEngine.process("inactive_apartments", thymeleafContext);
+        thymeleafContext.setVariable("apartments", source);
+        return templateEngine.process(template_name, thymeleafContext);
     }
 }

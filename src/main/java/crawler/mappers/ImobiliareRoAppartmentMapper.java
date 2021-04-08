@@ -89,6 +89,7 @@ public class ImobiliareRoAppartmentMapper extends BaseApartmentMapper {
               .details(details)
               .dateCreated(new Date())
               .contact(contactMapper.getContact(htmlDetailsDoc))
+              .active(true)
               .build();
       getAddressAndPositioning(apartment, htmlDetailsDoc);
       getLastUpdated(apartment, htmlDetailsDoc);

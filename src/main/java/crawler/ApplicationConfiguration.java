@@ -47,6 +47,7 @@ public class ApplicationConfiguration {
   List<Apartment> changedPriceApartments = new ArrayList<>();
   List<Apartment> foundNewApartments = new ArrayList<>();
   List<Apartment> inactiveApartments = new ArrayList<>();
+  List<Apartment> reactivatedApartments = new ArrayList<>();
   List<String> URLS =
       Arrays.asList(
           "https://www.imobiliare.ro/vanzare-apartamente/brasov/racadau?id=26607433", // Racadau 3
@@ -57,7 +58,7 @@ public class ApplicationConfiguration {
           );
 
   private final List<String> recipients =
-      Stream.of("your.eamil.list@here.com").collect(Collectors.toList());
+      Stream.of("goe.alexander@gmail.com", "andi14.2005@gmail.com").collect(Collectors.toList());
 
   private List<Apartment> getAppartments(String finalURL) throws IOException, ParseException {
     Connection webConnection = Jsoup.connect(finalURL).userAgent(USER_AGENT);
@@ -67,6 +68,8 @@ public class ApplicationConfiguration {
     if (webConnection.response().statusCode() == 200) {
       System.out.println("Connected to Website: " + finalURL);
       Elements apartmentContainer = htmlDoc.select("#container-lista-rezultate");
+      removeRelatedAndPromotedApartments(apartmentContainer);
+
       for (Element apartmentHTML : apartmentContainer.first().select("div[data-id-cod]")) {
         try {
           mapHTMLtoEntity(apartmentHTML).ifPresent(apartment -> apartments.add(apartment));
@@ -82,21 +85,63 @@ public class ApplicationConfiguration {
     return apartments;
   }
 
+  private void removeRelatedAndPromotedApartments(Elements apartmentContainer) {
+    apartmentContainer.select("#container-oferte-promovate").remove();
+    apartmentContainer.select("div.anunturi-related").remove();
+  }
+
+  private void checkIfApartmentsReactivated(List<Apartment> apartments) throws IOException, ParseException {
+    for(Apartment apartment : apartments) {
+      Connection webConnection = Jsoup.connect(apartment.getDirectLink()).followRedirects(false);
+      Document htmlDoc = webConnection.get();
+
+      //reactivate in case of resurface
+      int respStatusCode = webConnection.response().statusCode();
+      if(!isApartmentInactive(htmlDoc, respStatusCode)){
+        reactivateApartment(apartment);
+      }
+    }
+  }
+
   private void checkIfApartmentsStillExist(List<Apartment> apartments)
       throws IOException, ParseException {
     for (Apartment apartment : apartments) {
-      Connection webConnection = Jsoup.connect(apartment.getDirectLink());
-      Document htmlDoc = webConnection.get();
-      Elements ofertaExpirata = htmlDoc.select("#oferta_expirata");
-      if (ofertaExpirata.size() == 0) {
-        continue;
-      } else {
-        System.out.println("Found inactive apartment: " + apartment.getId());
-        apartment.setActive(false);
-        apartmentRepository.save(apartment);
-        inactiveApartments.add(apartment);
+      Connection webConnection = Jsoup.connect(apartment.getDirectLink()).followRedirects(false);
+      try{
+        Document htmlDoc = webConnection.get();
+
+        //Inactivate on redirect
+        int respStatusCode = webConnection.response().statusCode();
+
+        if(isApartmentInactive(htmlDoc, respStatusCode)) {
+          inactivateApartment(apartment);
+          continue;
+        }
+      }catch(Exception ex){
+        log.error("Issue getting link: {} , ex: {}", apartment.getDirectLink(), ex);
       }
     }
+  }
+
+  private boolean isApartmentInactive(Document htmlDoc, int respStatusCode){
+    if(respStatusCode == 301 || respStatusCode == 307 || htmlDoc.select("#oferta_expirata").size() != 0) {
+      return true;
+    }
+    return false;
+  }
+
+  private void reactivateApartment(Apartment apartment) {
+    System.out.println("Found reactivated apartment: " + apartment.getId());
+    apartment.setActive(true);
+    apartmentRepository.save(apartment);
+    reactivatedApartments.add(apartment);
+  }
+
+  private void inactivateApartment(Apartment apartment) {
+    System.out.println("Found inactive apartment: " + apartment.getId());
+    apartment.setActive(false);
+    apartmentRepository.save(apartment);
+    inactiveApartments.add(apartment);
   }
 
   private Optional<Apartment> mapHTMLtoEntity(Element apartmentDIVHeader)
@@ -123,10 +168,19 @@ public class ApplicationConfiguration {
       }
       return Optional.empty();
     }
-    Apartment apartment = apartmentMapper.getFromHeaderDiv(apartmentDIVHeader);
-    apartment.setPriceHistories(Arrays.asList(generateAndSavePriceHistory(apartment, null)));
-    checkIfContactAlreadyExists(apartment);
-    apartmentRepository.save(apartment);
+
+    Apartment apartment = new Apartment();
+    try{
+      log.info("####");
+      apartment = apartmentMapper.getFromHeaderDiv(apartmentDIVHeader);
+      apartment.setPriceHistories(Arrays.asList(generateAndSavePriceHistory(apartment, null)));
+      checkIfContactAlreadyExists(apartment);
+      apartmentRepository.save(apartment);
+
+    }catch(Exception e){
+      log.error("#### There was en error getting apartmnet from header: {}", apartmentDIVHeader);
+      log.error("#### Message: {}", e.getMessage());
+    }
     return Optional.ofNullable(apartment);
   }
 
@@ -159,22 +213,26 @@ public class ApplicationConfiguration {
     contactRepository.save(apartment.getContact());
   }
 
+//  @Bean
+//  public CommandLineRunner getAllActiveAppartments() {
+//    return (args) -> {
+//      foundNewApartments = apartmentRepository.findAllByActiveTrue();
+//      sortCollectionsByRoomsAndPrice();
+//      sendEmails();
+//    };
+//  }
+
   @Bean
   public CommandLineRunner crawlForAppartments() {
     return (args) -> {
       List<Apartment> apartmentsForTest = new ArrayList<>();
       System.out.println("Creepy Crawlies!\n ~ \n ~ \n ~ \n ~ \n ~ \n ~");
 
-      System.out.println("Verifying invalid links:");
+      System.out.println("Verifying invalid links and resurfaced links:");
       checkIfApartmentsStillExist(apartmentRepository.findAllByActiveTrue());
-      emailService.sendComplexMessageWithInactiveAccounts(
-          recipients,
-          "The following apartments are inactive!",
-          "These were taken off the market",
-          inactiveApartments);
+      checkIfApartmentsReactivated(apartmentRepository.findAllByActiveFalse());
 
-      System.out.println("Searching for new apartments: ");
-      System.out.println("");
+      System.out.println("Searching for new apartments: \n");
       for (String url : URLS) {
         foundNewApartments.addAll(getAppartments(url));
       }
@@ -198,14 +256,28 @@ public class ApplicationConfiguration {
   private void sendEmails() throws MessagingException {
     if (!foundNewApartments.isEmpty()) {
       emailService.sendComplexMessageWithNewApartments(
-              recipients, "Crawling for a home, Found New Appartments ", "", foundNewApartments);
+          recipients, "Crawling for a home, Found New Appartments ", "", foundNewApartments);
     }
     if (!changedPriceApartments.isEmpty()) {
       emailService.sendComplexMessageWithModifiedPrices(
+          recipients,
+          "Crawling for a home, Apartments that changed price",
+          "",
+          changedPriceApartments);
+    }
+    if (!inactiveApartments.isEmpty()){
+      emailService.sendComplexMessageWithInactiveAppartments(
               recipients,
-              "Crawling for a home, Apartments that changed price",
-              "",
-              changedPriceApartments);
+              "The following apartments are inactive!",
+              "These were taken off the market",
+              inactiveApartments);
+    }
+    if (!reactivatedApartments.isEmpty()){
+      emailService.sendComplexMessageWithReactivatedAppartments(
+              recipients,
+              "The following apartments have been reactivated!",
+              "IT'S A MIRACLE! PRAISE JESSUSSSSSah! ",
+              reactivatedApartments);
     }
   }
 }

@@ -1,0 +1,5 @@
+package crawler.utils;
+
+public enum EmailTemplates {
+    NEW_APARTMENTS, CHANGED_APARTMENTS, INACTIVE_APARTMENTS, REACTIVATED_APARTMENTS;
+}
